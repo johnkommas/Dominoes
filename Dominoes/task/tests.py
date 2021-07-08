@@ -102,7 +102,7 @@ class TestStage3(StageTest):
             self.right_end = ast.literal_eval(domino_snake[-6:])
         except (SyntaxError, ValueError, IndexError):
             raise WrongAnswer("Make sure your output is formatted according to the examples")
-        except IndexError:
+        except Exception:
             raise WrongAnswer("Some elements are missing from the snake")
 
     def check_the_design(self, output):

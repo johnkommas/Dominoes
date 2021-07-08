@@ -53,16 +53,42 @@ while True:
     else:
         pass
 
-print('======================================================================')
-print(f'Stock size: {len(stock)}')
-print(f'Computer pieces: {len(computer)}')
-print(snake[0])
-print('Your pieces:')
-for a,b in enumerate(player):
-    print(f"{a+1}:{b}")
-if status == 'player':
-    print("Status: It's your turn to make a move. Enter your command.")
-else:
-    print("Status: Computer is about to make a move. Press Enter to continue...")
+
+def output_results():
+    print('======================================================================')
+    print(f'Stock size: {len(stock)}')
+    print(f'Computer pieces: {len(computer)}')
+    if len(snake) <= 6:
+        for i in snake:
+            print(i, end="")
+    else:
+        for i in snake[:3]:
+            print(i, end="")
+        print("...", end="")
+        for i in snake[-3:]:
+            print(i, end="")
+    print()
+    print('Your pieces:')
+    for a, b in enumerate(player):
+        print(f"{a+1}:{b}")
+    if status == 'player':
+        print("Status: It's your turn to make a move. Enter your command.")
+    else:
+        print("Status: Computer is about to make a move. Press Enter to continue...")
 
 
+
+def make_move():
+    pass
+
+
+def check_input():
+    try:
+        my_turn = int(input())
+    except ValueError:
+        print("Invalid input. Please try again.")
+        return check_input()
+    return my_turn
+
+
+x = check_input()
