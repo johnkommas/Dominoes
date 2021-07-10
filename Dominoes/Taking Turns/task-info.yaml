@@ -347,5 +347,8 @@ files:
     # Write your code here
   learner_created: false
 feedback_link: https://hyperskill.org/projects/146/stages/788/implement#comment
-status: Unchecked
-record: -1
+status: Solved
+feedback:
+  message: Congratulations!
+  time: Sat, 10 Jul 2021 09:31:41 UTC
+record: 3
