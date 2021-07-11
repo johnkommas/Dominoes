@@ -81,7 +81,6 @@ def make_move(turn_player):
         computer_pieces = get_scores(count)
         decision = pick_side(computer_pieces)
 
-
     val = turn_player[abs(decision) - 1]
     # Select a domino and place it on the left side of the snake.
     if decision < 0:
@@ -150,7 +149,6 @@ def pick_side(computer_pieces):
     return 0
 
 
-
 def get_scores(count):
     score = []
     for piece in computer:
@@ -158,10 +156,6 @@ def get_scores(count):
     sorted_pieces = list(zip(score, computer))
     sorted_pieces.sort()
     return sorted_pieces
-
-
-
-
 
 
 while True:
@@ -195,4 +189,3 @@ while True:
     elif status == 'computer':
         make_move(computer)
         status = 'player'
-
