@@ -1,5 +1,6 @@
 # Write your code here
 import random
+import sys
 
 all_pieces = [[0, 0], [0, 1], [0, 2], [0, 3], [0, 4], [0, 5], [0, 6],
               [1, 1], [1, 2], [1, 3], [1, 4], [1, 5], [1, 6],
@@ -50,7 +51,7 @@ def output_results():
     print()
     print('Your pieces:')
     for a, b in enumerate(player):
-        print(f"{a+1}:{b}")
+        print(f"{a + 1}:{b}")
     if status == 'player' and len(computer) > 0:
         print("Status: It's your turn to make a move. Enter your command.")
     elif status == 'player' and len(computer) == 0:
@@ -62,38 +63,105 @@ def output_results():
     elif status == 'computer' and len(player) == 0:
         print("Status: The game is over. You won!")
         return True
-    else:
-        print("Status: The game is over. It's a draw!")
-        return True
 
 
-def make_move(desicion, turn_player):
+def make_move(turn_player):
+    if status == 'player':
+        try:
+            decision = int(input())
+            if abs(decision) > len(player):
+                print("Invalid input. Please try again.")
+                return make_move(turn_player)
+        except ValueError:
+            print("Invalid input. Please try again.")
+            return make_move(turn_player)
 
+    elif status == 'computer':
+        count = count_numbers()
+        computer_pieces = get_scores(count)
+        decision = pick_side(computer_pieces)
+
+
+    val = turn_player[abs(decision) - 1]
     # Select a domino and place it on the left side of the snake.
-    val = turn_player[abs(desicion) - 1]
-    if desicion < 0:
-        snake.insert(0, val)
-        turn_player.remove(val)
+    if decision < 0:
+        if snake[0][0] == val[1]:
+            snake.insert(0, val)
+            turn_player.remove(val)
+        elif snake[0][0] == val[0]:
+            val.reverse()
+            snake.insert(0, val)
+            val.reverse()
+            turn_player.remove(val)
+        else:
+            if status == 'computer':
+                return make_move(turn_player)
+            elif status == 'player':
+                print("Illegal move. Please try again.")
+                return make_move(turn_player)
+
     # Select a domino and place it on the right side of the snake.
-    elif desicion > 0:
-        snake.append(val)
-        turn_player.remove(val)
+    elif decision > 0:
+        if snake[-1][-1] == val[0]:
+            snake.append(val)
+            turn_player.remove(val)
+        elif snake[-1][-1] == val[1]:
+            val.reverse()
+            snake.insert(0, val)
+            val.reverse()
+            turn_player.remove(val)
+        else:
+            if status == 'computer':
+                return make_move(turn_player)
+            elif status == 'player':
+                print("Illegal move. Please try again.")
+                return make_move(turn_player)
+
     # Take an extra piece from the stock (if it's not empty) and skip a turn.
     else:
         if stock:
             turn_player.append(stock.pop())
+        else:
+            print("Status: The game is over. It's a draw!")
+            sys.exit(1)
 
 
-def check_input():
-    try:
-        my_turn = int(input())
-        if abs(my_turn) > len(player):
-            print("Invalid input. Please try again.")
-            return check_input()
-    except ValueError:
-        print("Invalid input. Please try again.")
-        return check_input()
-    return my_turn
+def count_numbers():
+    count = {0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0}
+    for num_set in snake:
+        first = num_set[0]
+        second = num_set[1]
+        count[first] += 1
+        count[second] += 1
+    for piece in computer:
+        first = piece[0]
+        second = piece[1]
+        count[first] += 1
+        count[second] += 1
+    return count
+
+
+def pick_side(computer_pieces):
+    for computer_piece in computer_pieces:
+        if snake[0][0] in computer_piece[-1]:
+            return -1 * (computer.index(computer_piece[-1]) + 1)
+        elif snake[-1][-1] in computer_piece[-1]:
+            return +1 * (computer.index(computer_piece[-1]) + 1)
+    return 0
+
+
+
+def get_scores(count):
+    score = []
+    for piece in computer:
+        score.append(count[piece[0]] + count[piece[1]])
+    sorted_pieces = list(zip(score, computer))
+    sorted_pieces.sort()
+    return sorted_pieces
+
+
+
+
 
 
 while True:
@@ -122,12 +190,9 @@ while True:
     if end_game:
         break
     if status == 'player':
-        value = check_input()
-        make_move(value, player)
+        make_move(player)
         status = 'computer'
     elif status == 'computer':
-        computer_range_number = range(-len(computer), len(computer))
-        value = random.choice(computer_range_number)
-        make_move(value, computer)
+        make_move(computer)
         status = 'player'
 
